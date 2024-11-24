@@ -1,12 +1,12 @@
 import { GraphQLObjectType, GraphQLSchema } from "graphql";
 import { UserQueries, UserMutations } from "./users/users.resolver";
 import { AuthMutations } from "./auth/auth.resolver";
+import { ListingMutations } from "./listings/listing.resolver";
 
 const rootQuery = new GraphQLObjectType({
   name: "RootQuery",
   fields: {
     ...UserQueries.getFields,
-    // Todo: Add More Resolvers here for each of the defined modules
   },
 });
 
@@ -15,6 +15,7 @@ const rootMutation = new GraphQLObjectType({
   fields: {
     ...UserMutations.getFields,
     ...AuthMutations.getFields,
+    ...ListingMutations,
   },
 });
 
