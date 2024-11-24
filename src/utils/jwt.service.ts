@@ -15,8 +15,9 @@ class JwtService {
     return JwtService.instance;
   }
 
-  public sign(payload: object): string {
-    return jwt.sign(payload, this.SECRET_KEY);
+  public sign(payload: object, expiresIn?: string | number): string {
+    return jwt.sign(payload, this.SECRET_KEY, { expiresIn });
+
   }
 
   public verify(token: string): string | JwtPayload | null {
