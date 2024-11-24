@@ -1,5 +1,6 @@
 // Todo: Implement the User Service Logic to be used in the Resolver - Following MVR Model (Model View Resolver)
 import { Error } from "mongoose";
+import bcrypt from "bcryptjs";
 
 import User from "./user.schema";
 import { IUser } from "./user.schema";
@@ -14,7 +15,7 @@ class UserService {
     }
   }
 
-  static async findUserById(userId: string): Promise<IUser | null> {
+  static async getUser(userId: string): Promise<IUser | null> {
     try {
       const user = await User.findById(userId);
       return user;
@@ -25,13 +26,16 @@ class UserService {
 
   static async updateUser(
     userId: string,
-    updates: Partial<
-      Pick<IUser, "email" | "username" | "password" | "isAdmin" | "role">
-    >
+    updates: Partial<Pick<IUser, "email" | "username" | "password" | "role">>
   ): Promise<IUser | null> {
     try {
       if (Object.keys(updates).length === 0) {
         throw new Error("No updates provided");
+      }
+
+      if (updates.password) {
+        const saltRounds = 10;
+        updates.password = await bcrypt.hash(updates.password, saltRounds);
       }
 
       const updatedUser = await User.findByIdAndUpdate(userId, updates, {

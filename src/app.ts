@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request } from "express";
 import { graphqlHTTP } from "express-graphql";
 import expressPlayground from "graphql-playground-middleware-express";
 import cors from "cors";
@@ -8,11 +8,11 @@ import mongoose from "mongoose";
 import morgan from "morgan";
 const { createHandler } = require("graphql-http/lib/use/express");
 import schema from "./schema";
+import { authenticateUserToken } from "./auth/middleware/auth.middleware";
 dotenv.config();
 const app = express();
 app.use(morgan("common"));
 
-// USE HELMET AND CORS MIDDLEWARES
 app.use(
   cors({
     origin: ["*"], // Comma separated list of your urls to access your api. * means allow everything
@@ -47,10 +47,19 @@ mongoose
   .catch((err: Error) => console.log(err));
 
 // Create and use the GraphQL handler.
-app.all(
+
+app.use("/graphql", authenticateUserToken);
+
+app.use(
   "/graphql",
-  createHandler({
-    schema: schema,
+  graphqlHTTP(async (req, res) => {
+    const request = req as Request;
+
+    const context = {
+      // @ts-ignore
+      user: request.user,
+    };
+    return { schema, graphiql: process.env.NODE_ENV !== "production", context };
   })
 );
 

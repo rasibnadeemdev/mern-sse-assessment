@@ -5,10 +5,7 @@ import { AuthMutations } from "./auth/auth.resolver";
 const rootQuery = new GraphQLObjectType({
   name: "RootQuery",
   fields: {
-    user: {
-      type: UserQueries,
-      resolve: (parent, args) => {}, // Add Root Resolver If Necessary
-    },
+    ...UserQueries.getFields,
     // Todo: Add More Resolvers here for each of the defined modules
   },
 });
@@ -16,14 +13,8 @@ const rootQuery = new GraphQLObjectType({
 const rootMutation = new GraphQLObjectType({
   name: "RootMutation",
   fields: {
-    user: {
-      type: UserMutations,
-      resolve: (parent, args) => {},
-    },
-    auth: {
-      type: AuthMutations,
-      resolve: (parent, args) => {},
-    },
+    ...UserMutations.getFields,
+    ...AuthMutations.getFields,
   },
 });
 
