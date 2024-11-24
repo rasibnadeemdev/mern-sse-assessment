@@ -1,17 +1,26 @@
-// Import necessary modules
-import mongoose, { Schema, Document, Types } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
-// Define the interface for Listing document
 export interface IListing extends Document {
-
+  title: string;
+  description: string;
+  price: number;
+  status: string;
+  seller: mongoose.Types.ObjectId;
 }
 
-// Create a schema for the Listing model
-const listingSchema: Schema<IListing> = new Schema(
-    {
+const listingSchema = new Schema<IListing>(
+  {
+    title: { type: String, required: true },
+    description: { type: String, required: false },
+    price: { type: Number, required: true },
+    status: { type: String, default: "active" },
+    seller: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    { timestamps: true }
+  },
+  { timestamps: true }
 );
 
-// Create and export the Listing model
 export default mongoose.model<IListing>("Listing", listingSchema);
