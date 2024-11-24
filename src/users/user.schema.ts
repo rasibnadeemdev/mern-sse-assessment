@@ -1,6 +1,7 @@
 // Import necessary modules
 import mongoose, { Schema, Document } from "mongoose";
 
+type IUserRole = "buyer" | "seller";
 // Define the interface for User document
 export interface IUser extends Document {
   email: string;
@@ -9,7 +10,7 @@ export interface IUser extends Document {
   isAdmin: boolean;
   createdAt: Date;
   updatedAt: Date;
-  role: "buyer" | "seller";
+  role: IUserRole;
 }
 
 // Create a schema for the User model
